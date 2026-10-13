@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GTO 学院 · 德州扑克 GTO 学习站</title>
+<meta name="description" content="用交互式范围表、权益计算器与测验系统学习无限注德州扑克的 GTO 策略。">
+<meta name="theme-color" content="#0a0e13">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230e2a21'/><text x='50' y='72' font-size='64' text-anchor='middle' fill='%23e9b949'>♠</text></svg>">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#home">
+      <span class="brand-mark">♠</span>
+      <span class="brand-text">GTO 学院<em>德州扑克策略学习站</em></span>
+    </a>
+    <nav class="nav">
+      <a href="#home" data-nav="home">概览</a>
+      <a href="#basics" data-nav="basics">基础理论</a>
+      <a href="#preflop" data-nav="preflop">翻前范围</a>
+      <a href="#calc" data-nav="calc">计算器</a>
+      <a href="#train" data-nav="train">训练</a>
+      <a href="#postflop" data-nav="postflop">翻后</a>
+      <a href="#glossary" data-nav="glossary">术语</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- ==================== 概览 ==================== -->
+<section class="view" id="view-home">
+  <div class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">无限注德州扑克 · 6-Max · 100bb</p>
+      <h1>把「感觉」换成<span class="hl">频率</span>。</h1>
+      <p class="lead">
+        GTO 不是背下几手牌，而是理解为什么在同一个位置、同一手牌上，
+        高手会选择 70% 加注 + 30% 弃牌。这个站点用可交互的范围表、
+        真实算出来的胜率和你自己的答题记录，把这件事讲清楚。
+      </p>
+      <div class="hero-actions">
+        <a class="btn primary" href="#preflop">打开翻前范围表</a>
+        <a class="btn" href="#basics">从基础理论开始</a>
+      </div>
+    </div>
+    <div class="hero-panel">
+      <div class="hero-panel-title">你的学习进度</div>
+      <div class="ring" id="home-ring"><span id="home-ring-text">0%</span></div>
+      <p class="muted" id="home-progress-text">还没有完成任何课程</p>
+      <div class="hero-panel-title" style="margin-top:18px">测验战绩</div>
+      <p class="stat-line"><span id="home-quiz-total">0</span> 题作答 · 正确率 <b id="home-quiz-rate">—</b></p>
+    </div>
+  </div>
+
+  <h2 class="section-title">学习路径</h2>
+  <p class="section-sub">建议按顺序走完这六步：先建立概念，再记忆范围，然后用训练检验自己。</p>
+  <div class="path-grid" id="home-path"></div>
+
+  <h2 class="section-title">这个站为什么和「背图表」不一样</h2>
+  <div class="feature-grid">
+    <div class="card">
+      <div class="card-icon">🧮</div>
+      <h3>真算，不是抄的</h3>
+      <p>页面里的胜率由本站的牌力评估引擎实时计算。全部 1,712,304 种公共牌的全枚举结果，
+      已经和独立的参考实现交叉验证一致（例如 AA vs KK = 82.637%）。</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🎯</div>
+      <h3>测验答案 = 范围表</h3>
+      <p>训练题目直接从范围数据生成，选项与频率一一对应。答错时会告诉你
+      这手牌真正的混合比例，而不是一个笼统的「应该加注」。</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🧩</div>
+      <h3>把混合频率标出来</h3>
+      <p>范围表里的每格都按比例切片着色，一眼就能看出哪手牌是纯策略、
+      哪手牌是 50/50 的混合，这正是 GTO 的核心特征。</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">经典对局的真实胜率</h2>
+  <p class="section-sub">下面的数字由你的浏览器现场模拟得出（蒙特卡洛，误差约 ±0.2%），不是预先写死的。</p>
+  <div class="table-wrap">
+    <table class="data-table" id="home-matchups">
+      <thead><tr><th>对局</th><th>手牌 1 权益</th><th>手牌 2 权益</th><th>平局</th><th>说明</th></tr></thead>
+      <tbody><tr><td colspan="5" class="muted">正在实时计算…</td></tr></tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">先说清楚数据来源</h2>
+  <div class="card warn">
+    <h3>本站范围表是「教学近似值」</h3>
+    <p>真实 solver 输出的翻前范围带有非常细碎的混合频率（例如某手牌 37% 3-Bet），
+    并且随开池尺度、是否有前注、对手水平而变化。本站把频率简化为 25% / 50% / 75% 的刻度，
+    数值按 6-Max、100bb、无前注的标准场景整理，用途是<b>理解范围结构与位置差异</b>，
+    而不是替代 solver 做精确查表。请把它当作地图，而不是地形本身。</p>
+  </div>
+</section>
+
+<!-- ==================== 基础理论 ==================== -->
+<section class="view" id="view-basics">
+  <h1 class="page-title">基础理论</h1>
+  <p class="lead">
+    这六节课覆盖了 GTO 决策的全部零件：期望值、价格、权益实现、防守频率、组合数学与剥削逻辑。
+    每节课都有可以拖动的小实验，读完请务必亲手拨一下滑块。
+  </p>
+  <div class="progress-strip"><div class="bar"><i id="basic-bar"></i></div>
+    <span class="muted" id="basic-progress-text">0 / 6 已完成</span></div>
+  <div class="lesson-list" id="lessons"></div>
+</section>
+
+<!-- ==================== 翻前范围 ==================== -->
+<section class="view" id="view-preflop">
+  <h1 class="page-title">翻前范围表</h1>
+  <p class="lead">
+    13×13 矩阵的每一格是一类手牌：对角线是口袋对子，右上三角是同花牌，左下三角是非同花牌。
+    每格按动作频率切片着色——切片越多，说明这手牌越接近「混合策略」。
+  </p>
+  <div class="range-layout">
+    <aside class="range-side">
+      <label class="field">
+        <span>场景</span>
+        <select id="range-chart"></select>
+      </label>
+      <div class="field">
+        <span>显示方式</span>
+        <div class="seg" id="range-mode">
+          <button data-mode="action" class="active">动作</button>
+          <button data-mode="freq">主频率</button>
+        </div>
+      </div>
+      <label class="field checkbox">
+        <input type="checkbox" id="range-showcombos">
+        <span>在格子里显示组合数</span>
+      </label>
+      <div id="range-stats" class="stats"></div>
+    </aside>
+    <div class="range-main">
+      <div class="matrix-head" id="range-head"></div>
+      <div class="matrix" id="range-matrix"></div>
+      <div class="legend" id="range-legend"></div>
+      <div class="note" id="range-note"></div>
+      <details class="howto">
+        <summary>怎么读这张表？</summary>
+        <ul>
+          <li><b>对角线</b>：口袋对子，如 AA / KK / 22，共 6 种组合。</li>
+          <li><b>右上三角</b>（带 s）：同花牌，共 4 种组合。AKs 就是两张黑桃 / 红心 / 方块 / 梅花。</li>
+          <li><b>左下三角</b>（带 o）：非同花牌，共 12 种组合。AKo 有 12 种花色搭配。</li>
+          <li><b>颜色切片</b>：一格里有几段颜色，代表这手牌按什么比例混合几种动作；
+            深灰的部分是弃牌比例。切片显示的是「长期平均」的打法。</li>
+          <li><b>百分比统计</b>：组合数占 1326 种总组合的比例，是衡量范围宽窄的通用单位。</li>
+        </ul>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 计算器 ==================== -->
+<section class="view" id="view-calc">
+  <h1 class="page-title">计算器</h1>
+  <p class="lead">三个工具，覆盖翻前翻后最常用的算术。全部在本地计算，不联网。</p>
+  <div class="tabs" id="calc-tabs">
+    <button data-tab="equity" class="active">权益计算器</button>
+    <button data-tab="odds">赔率 · MDF</button>
+    <button data-tab="ev">EV · 弃牌率</button>
+  </div>
+
+  <div class="tabpanel active" data-panel="equity">
+    <div class="card">
+      <div class="row between">
+        <h3>对局设置</h3>
+        <button class="btn small" id="eq-add">+ 添加玩家</button>
+      </div>
+      <div id="eq-players" class="players"></div>
+      <label class="field">
+        <span>公共牌（可不填，或填 3 / 4 / 5 张）</span>
+        <div class="cardslot" id="eq-board"></div>
+      </label>
+      <div class="row wrap">
+        <label class="field inline">
+          <span>精度</span>
+          <select id="eq-iters">
+            <option value="20000">快速 · 2 万次</option>
+            <option value="100000" selected>标准 · 10 万次</option>
+            <option value="400000">精细 · 40 万次</option>
+          </select>
+        </label>
+        <button class="btn primary" id="eq-run">开始计算</button>
+        <button class="btn" id="eq-exact" title="把剩余公共牌全部枚举一遍，结果 100% 准确">精确枚举</button>
+      </div>
+      <p class="hint" id="eq-hint">提示：一方填具体手牌、另一方选范围，是最常用的用法（例如「我的 AA 对上 BTN 的开池范围」）。</p>
+    </div>
+    <div id="eq-result"></div>
+  </div>
+
+  <div class="tabpanel" data-panel="odds">
+    <div class="card">
+      <h3>底池赔率与防守频率</h3>
+      <div class="slider-row">
+        <label>当前底池 <b id="odds-pot-out">100</b> bb<input type="range" id="odds-pot" min="1" max="500" value="100"></label>
+        <label>对手下注 <b id="odds-bet-out">50</b> bb<input type="range" id="odds-bet" min="1" max="500" value="50"></label>
+      </div>
+      <div class="result-grid" id="odds-out"></div>
+      <p class="hint">MDF（最小防守频率）回答的是：为了让对手用「任意两张牌」下注都无法自动盈利，
+      你的范围里至少要有多少比例继续游戏。它给出的是防守的<b>下限</b>，不是最优值。</p>
+    </div>
+  </div>
+
+  <div class="tabpanel" data-panel="ev">
+    <div class="card">
+      <h3>跟注 EV / 全下 EV</h3>
+      <div class="slider-row">
+        <label>底池 <b id="ev-pot-out">100</b> bb<input type="range" id="ev-pot" min="1" max="500" value="100"></label>
+        <label>下注额 <b id="ev-bet-out">75</b> bb<input type="range" id="ev-bet" min="1" max="500" value="75"></label>
+        <label>你的权益 <b id="ev-eq-out">35</b>%<input type="range" id="ev-eq" min="0" max="100" value="35"></label>
+        <label>对手弃牌率 <b id="ev-fe-out">45</b>%<input type="range" id="ev-fe" min="0" max="100" value="45"></label>
+      </div>
+      <div class="result-grid" id="ev-out"></div>
+      <p class="hint" id="ev-note"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 训练 ==================== -->
+<section class="view" id="view-train">
+  <h1 class="page-title">训练</h1>
+  <p class="lead">题目从本站范围数据自动生成，答错会告诉你真实的混合比例。</p>
+  <div class="train-head">
+    <div class="score-card"><span>正确 / 总题</span><b><i id="t-correct">0</i> / <i id="t-total">0</i></b></div>
+    <div class="score-card"><span>当前连胜</span><b id="t-streak">0</b></div>
+    <div class="score-card"><span>最高连胜</span><b id="t-best">0</b></div>
+    <div class="score-card"><span>正确率</span><b id="t-rate">—</b></div>
+    <button class="btn small" id="t-reset">清空记录</button>
+  </div>
+  <div class="seg wide" id="train-mode">
+    <button data-mode="preflop" class="active">翻前决策</button>
+    <button data-mode="odds">底池赔率</button>
+    <button data-mode="equity">权益估算</button>
+  </div>
+  <div id="train-body"></div>
+  <div id="train-review" class="review"></div>
+</section>
+
+<!-- ==================== 翻后 ==================== -->
+<section class="view" id="view-postflop">
+  <h1 class="page-title">翻后</h1>
+  <p class="lead">
+    翻牌一出来，先别急着想自己有什么牌——先判断这个牌面「更有利于谁的范围」。
+    下面这个工具会帮你把牌面拆成四个维度。
+  </p>
+
+  <div class="card">
+    <div class="row between">
+      <h3>翻牌面分析器</h3>
+      <button class="btn small" id="pf-clear">清空</button>
+    </div>
+    <div class="cardslot board" id="pf-board"></div>
+    <div class="chip-row" id="pf-presets"></div>
+    <div id="pf-output"></div>
+  </div>
+
+  <h2 class="section-title">翻后四条主线</h2>
+  <div class="feature-grid">
+    <div class="card">
+      <h3>1 · 范围优势与坚果优势</h3>
+      <p><b>范围优势</b>决定下注频率：谁的整个范围在牌面上平均更强，谁就该更多地持续下注。
+      <b>坚果优势</b>决定下注尺度：谁手里握着最多的「最强牌」，谁就可以用更大的尺度，
+      因为它不怕被打回来。</p>
+      <p class="muted">例如 A 高彩虹面：开池方有更多 AK/AQ，范围优势明显，可以用整个范围小尺度高频下注。</p>
+    </div>
+    <div class="card">
+      <h3>2 · 极化与线性</h3>
+      <p><b>极化范围</b> = 强牌 + 纯诈唬，中间那些「有点摊牌价值但不强」的牌被拿掉。
+      <b>线性范围</b> = 从强到中等连续排列。转牌与河牌通常越极化，翻牌圈通常越线性。</p>
+      <p class="muted">判断方法：问自己「我下注是为了被更差的牌跟注（价值），还是为了打掉更好的牌（诈唬）？」</p>
+    </div>
+    <div class="card">
+      <h3>3 · 下注尺度</h3>
+      <p>小尺度（25%~33%）用于范围压制的干燥面，它让对手很难找到足够的防守牌；
+      大尺度（66%~100%）用于湿润面或你的范围里有很多两极化强牌时。</p>
+      <p class="muted">记住：尺度服务于「你要让对手的最差跟注牌是什么」这个问题。</p>
+    </div>
+    <div class="card">
+      <h3>4 · 阻断牌决定诈唬选谁</h3>
+      <p>河牌诈唬时，优先选择「阻断对手跟注范围、又不阻断对手弃牌范围」的牌。
+      例如对手范围里有很多同花听牌，你手里握着同花 A 就最适合诈唬——因为它
+      既挡住了对手的坚果同花，又对对手的弃牌部分毫无影响。</p>
+    </div>
+  </div>
+
+  <div class="card warn">
+    <h3>一个诚实提醒</h3>
+    <p>翻后策略高度依赖具体的范围、尺度和筹码深度。本站给的是判断框架，
+    不是可以作为标准答案的「正确下注频率」。想精进翻后，正确做法是把范围表打牢，
+    然后用 solver 跑你自己常遇到的局面。</p>
+  </div>
+</section>
+
+<!-- ==================== 术语 ==================== -->
+<section class="view" id="view-glossary">
+  <h1 class="page-title">术语表</h1>
+  <p class="lead">这些词在 GTO 讨论里出现的频率极高，值得花十分钟过一遍。</p>
+  <div class="glossary-search">
+    <input type="search" id="glossary-filter" placeholder="搜索术语…（例如：MDF、阻断）">
+  </div>
+  <div class="glossary-list" id="glossary-list"></div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div>
+    <b>GTO 学院</b> · 一个用于学习无限注德州扑克策略的离线站点
+  </div>
+  <div class="muted">
+    范围数据为公开 solver 结论的教学近似整理；所有权益与赔率由本地引擎实算。
+    仅供学习与研究使用，请遵守所在地法律法规。
+  </div>
+</footer>
+
+<!-- 卡牌选择器 -->
+<div class="picker" id="picker" hidden>
+  <div class="picker-box">
+    <div class="row between">
+      <h3 id="picker-title">选择一张牌</h3>
+      <button class="btn small" id="picker-close">关闭</button>
+    </div>
+    <div class="picker-grid" id="picker-grid"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="assets/ranges.js"></script>
+<script src="assets/engine.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
